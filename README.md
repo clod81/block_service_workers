@@ -1,4 +1,4 @@
-Extension to block Service Workers registration in Google Chrome browser
+Extension to block Service Workers registration in Chrome and Firefox browsers
 =========
 
 When loaded, this extension will prevent Service Workers to be registered.
