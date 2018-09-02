@@ -3,7 +3,7 @@ Extension to block Service Workers registration in Google Chrome browser
 
 When loaded, this extension will prevent Service Workers to be registered.
 
-![POC](https://raw.githubusercontent.com/clod81/block_service_workers/master/poc.png)
+![POC](https://imgur.com/a/MiAXgk3)
 
 ## Authors ##
 
