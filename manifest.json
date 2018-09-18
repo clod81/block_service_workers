@@ -3,6 +3,15 @@
   "name": "Block Service Workers",
   "description": "Disallow to register Service Workers",
   "version": "0.0.1",
+  "permissions":[
+    "tabs",
+    "storage"
+  ],
+  "background": 
+  {
+    "scripts": ["confirm.js"],
+    "persistent": false
+  },
   "content_scripts": [
     {
       "matches": ["https://*/*"],
