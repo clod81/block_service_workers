@@ -2,6 +2,7 @@ Extension to block Service Workers registration in Chrome and Firefox browsers
 =========
 
 [Chrome Web Store](https://chrome.google.com/webstore/detail/block-service-workers/ceokjgeibfjfcboemhdpkdalankbmnej)
+
 [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/block-service-workers/)
 
 
