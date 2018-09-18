@@ -1,9 +1,16 @@
 Extension to block Service Workers registration in Chrome and Firefox browsers
 =========
 
+[Chrome Web Store](https://chrome.google.com/webstore/detail/block-service-workers/ceokjgeibfjfcboemhdpkdalankbmnej)
+[Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/block-service-workers/)
+
+
 When loaded, this extension will prevent Service Workers to be registered.
+
 On Chrome, the user will be prompted to trust the domain, or block all service workers under it.
+
 On Firefox, at this stage, the extension only blocks and does not allow to specify which domains to block or grant Service Workers registration.
+
 If you want to manually install it on Firefox from this code, change the `manifest.json` to:
 ```
 {
