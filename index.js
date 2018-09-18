@@ -8,7 +8,7 @@ function setPageJS(content){
   script.remove();
 }
 
-if(chrome && chrome.runtime){ // only in Chrome
+if(chrome && chrome.storage){ // only in Chrome
   // GET USER CHOICE FROM WEB PAGE
   window.addEventListener("message", function(event) {  
     if(event.source != window){
@@ -43,7 +43,7 @@ if(chrome && chrome.runtime){ // only in Chrome
   chrome.runtime.sendMessage({message: "domain"}, function(response){});
 }
 
-if(chrome && chrome.runtime){ // only in Chrome
+if(chrome && chrome.storage){ // only in Chrome
   // RETRIEVE DOMAIN FROM BACKGROUND SCRIPT
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     if(request.message == "domain"){
