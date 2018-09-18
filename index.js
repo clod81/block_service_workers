@@ -1,23 +1,27 @@
-var storedValue;
 var override_service_worker;
 
 // GET USER CHOICE FROM WEB PAGE
 window.addEventListener("message", function(event) {  
-  console.log("MESSAGE");
   if(event.source != window){
     return;
   }
   if (event.data.type && event.data.text){
-    var domain = event.data.text;
-    var type   = event.data.type;
-    console.log("domain: " + domain);
-    console.log("type: " + type);
-    if(type == "ALLOW_SERVICE_WORKERS"){
-      chrome.storage.sync.set({ domain: true });
-    }
-    if(type == "DISALLOW_SERVICE_WORKERS"){
-      chrome.storage.sync.set({ domain: false });
-    }
+    chrome.storage.sync.get('block_service_workers', function(data){
+      if(!data){
+        data = {};
+      }
+      var domain = event.data.text;
+      var type   = event.data.type;
+      console.log("domain: " + domain);
+      console.log("type: " + type);
+      if(type == "ALLOW_SERVICE_WORKERS"){
+        data[domain] = true;
+      }
+      if(type == "DISALLOW_SERVICE_WORKERS"){
+        data[domain] = false;
+      }
+      chrome.storage.sync.set({ 'block_service_workers': data });
+    });
   }
 }, false);
 
@@ -27,13 +31,17 @@ chrome.runtime.sendMessage({message: "domain"}, function(response){});
 // RETRIEVE DOMAIN FROM BACKGROUND SCRIPT
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message == "domain"){
-    console.log("response");
-    console.log(request);
+    // console.log("response");
+    var domain = request.domain;
+    // console.log(domain);
     // RETRIEVE STORED USER PREFERENCE
-    chrome.storage.sync.get(request.domain, function(data){
-      console.log("data");
-      console.log(data);
-      storedValue = data.domain;
+    chrome.storage.sync.get('block_service_workers', function(data){
+      var storedValue = null;
+      if(data.block_service_workers){
+        var storedValue = data.block_service_workers[domain];
+      }
+      console.log("data");      
+      console.log(storedValue);
       if(storedValue === true){ // Already ALLOWED
         return;
       } else {
