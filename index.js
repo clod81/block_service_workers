@@ -18,7 +18,7 @@ if(chrome && chrome.storage){ // only in Chrome
       if(event.data.type != 'DECIDE_SERVICE_WORKERS'){
         return;
       }
-      chrome.runtime.sendMessage({message: "ask"});
+      chrome.runtime.sendMessage({message: "ask", domain: event.data.text});
     }
   }, false);
   

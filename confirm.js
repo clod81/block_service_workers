@@ -38,23 +38,20 @@ if(chrome && chrome.storage){ // only in Chrome
         chrome.tabs.sendMessage(tabs[0].id, {message: 'domain', domain: url.hostname});
       });
     }
-    if(request.message == "ask"){
-      chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, function(tabs){
-        var url = new URL(tabs[0].url);
-        chrome.notifications.create(url.hostname,
-          {
-            type: "basic",
-            requireInteraction: true,
-            title: "Do you want to ALLOW Service Workers for this website (" + url.hostname + ")?",
-            iconUrl: chrome.extension.getURL("logo.png"),
-            message: "Click YES to allow, or NO to block",
-            buttons: [
-              {title: "YES"},
-              {title: "NO"}
-            ]
-          }
-        );
-      });
+    if(request.message == "ask" && request.domain){
+      chrome.notifications.create(request.domain,
+        {
+          type: "basic",
+          requireInteraction: true,
+          title: "Do you want to ALLOW Service Workers for this website (" + request.domain + ")?",
+          iconUrl: chrome.extension.getURL("logo.png"),
+          message: "Click YES to allow, or NO to block",
+          buttons: [
+            {title: "YES"},
+            {title: "NO"}
+          ]
+        }
+      );
     }
   });
 }
