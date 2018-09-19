@@ -46,7 +46,7 @@ if(chrome && chrome.storage){ // only in Chrome
             type: "basic",
             requireInteraction: true,
             title: "Do you want to ALLOW Service Workers for this website (" + url.hostname + ")?",
-            iconUrl: "https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1032686/1160/772/m1/fpnw/wm0/usb-flash-drive-flat-icon-01-.jpg?1456561868&s=0a614a61f233630542ee5a77c5baec30",
+            iconUrl: chrome.extension.getURL("logo.png"),
             message: "Click YES to allow, or NO to block",
             buttons: [
               {title: "YES"},
