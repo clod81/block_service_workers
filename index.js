@@ -29,6 +29,17 @@ if(chrome && chrome.storage){ // only in Chrome
 if(chrome && chrome.storage){ // only in Chrome
   // RETRIEVE DOMAIN FROM BACKGROUND SCRIPT
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+    // User selected to block, clear all existing SWs
+    if(request.message == "remove"){
+      var content = 'if ("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(function(regs){';
+          content += 'for(let reg of regs){';
+            content += 'reg.unregister();'
+           content +='}'; 
+        content += '})};'
+        setPageJS(content);
+        return;
+    }
+    // Get domain response
     if(request.message == "domain"){
       var domain = request.domain;
       // RETRIEVE STORED USER PREFERENCE
