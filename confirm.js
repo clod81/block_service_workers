@@ -1,19 +1,20 @@
 if(chrome && chrome.storage){ // only in Chrome
   function saveDomain(domain, type){
-    chrome.storage.sync.get(domain, function(data){
-      var data = {};
-      if(type === 0){
-        data[domain] = true;
-        chrome.storage.sync.set(data, function(){
-          chrome.tabs.query({url: 'https://' + domain + '/*'}, function(tabs){
-            chrome.tabs.reload(tabs[0].id);
-          });
-        });
-      }
-      if(type === 1){
-        data[domain] = false;
-        chrome.storage.sync.set(data);
-      }
+    var data = {};
+    if(type === 0){
+      data[domain] = true;
+    }
+    if(type === 1){
+      data[domain] = false;
+    }
+    chrome.storage.sync.set(data, function(){
+      chrome.tabs.query({url: 'https://' + domain + '/*'}, function(tabs){
+        if(data[domain]){
+          chrome.tabs.reload(tabs[0].id);
+        }else{
+          chrome.tabs.sendMessage(tabs[0].id, {message: 'remove'});
+        }
+      });
     });
   }
   
