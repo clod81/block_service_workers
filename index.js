@@ -32,10 +32,10 @@ if(chrome && chrome.storage){ // only in Chrome
     if(request.message == "domain"){
       var domain = request.domain;
       // RETRIEVE STORED USER PREFERENCE
-      chrome.storage.sync.get('__block_service_workers', function(data){
-        var storedValue = null;
-        if(data.__block_service_workers){
-          storedValue = data.__block_service_workers[domain];
+      chrome.storage.sync.get(domain, function(data){
+        var storedValue;
+        if(data[domain] != null){
+          storedValue = data[domain];
         }
         if(storedValue === true){ // Already ALLOWED
           return;

@@ -1,20 +1,10 @@
 if(chrome && chrome.storage){ // only in Chrome
   function saveDomain(domain, type){
-    chrome.storage.sync.get('__block_service_workers', function(data){
-      if(!data){
-        data = {};
-      }else{
-        if(data.__block_service_workers){
-          data = data.__block_service_workers;
-          if(!data){
-            data = {};
-          }
-        }
-      }
-      var callback;
+    chrome.storage.sync.get(domain, function(data){
+      var data = {};
       if(type === 0){
         data[domain] = true;
-        chrome.storage.sync.set({ '__block_service_workers': data }, function(){
+        chrome.storage.sync.set(data, function(){
           chrome.tabs.query({url: 'https://' + domain + '/*'}, function(tabs){
             chrome.tabs.reload(tabs[0].id);
           });
@@ -22,7 +12,7 @@ if(chrome && chrome.storage){ // only in Chrome
       }
       if(type === 1){
         data[domain] = false;
-        chrome.storage.sync.set({ '__block_service_workers': data });
+        chrome.storage.sync.set(data);
       }
     });
   }
@@ -34,8 +24,10 @@ if(chrome && chrome.storage){ // only in Chrome
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     if(request.message == "domain"){
       chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, function(tabs){
-        var url = new URL(tabs[0].url);
-        chrome.tabs.sendMessage(tabs[0].id, {message: 'domain', domain: url.hostname});
+        if(tabs[0]){
+          var url = new URL(tabs[0].url);
+          chrome.tabs.sendMessage(tabs[0].id, {message: 'domain', domain: url.hostname});
+        }
       });
     }
     if(request.message == "ask" && request.domain){
