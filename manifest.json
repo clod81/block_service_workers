@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Block Service Workers",
   "description": "Disallow to register Service Workers",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "icons": {
      "16": "logox16.png",
      "48": "logox48.png",

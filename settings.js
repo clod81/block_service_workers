@@ -3,6 +3,22 @@
 
 let $buttonClear = $('#clear_settings');
 let $domains = $('#domains');
+const entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml(string){
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
+}
 
 $buttonClear.on('click', function(){
   chrome.storage.sync.clear();
@@ -21,6 +37,7 @@ chrome.storage.sync.get(null, function(data){
   }
   Object.keys(data).sort().forEach(function(domain) {
     var value = data[domain];
+    var domain = escapeHtml(domain);
     var $li = $("<li id='" + domain + "' class='" + value + "'><button class='remove'>X</button>" + domain + "<hr/></li>");
     $domains.append($li);
   });
