@@ -1,5 +1,11 @@
 {
   "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "bloooockserviceworkers@eeeeeeeeeeeeeeeeeemail.com",
+      "strict_min_version": "52.0"
+    }
+  },
   "name": "Block Service Workers",
   "description": "Disallow to register Service Workers",
   "version": "0.2.2",
@@ -15,8 +21,7 @@
   ],
   "background":
   {
-    "scripts": ["confirm.js"],
-    "persistent": false
+    "scripts": ["confirm.js"]    
   },
   "browser_action": {
     "default_icon": "logox32.png",
