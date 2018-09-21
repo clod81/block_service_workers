@@ -19,8 +19,7 @@
     "storage",
     "notifications"
   ],
-  "background":
-  {
+  "background":{
     "scripts": ["confirm.js"],
     "persistent": false  
   },
@@ -32,7 +31,8 @@
     {
       "matches": ["https://*/*"],
       "run_at": "document_start",
-      "js": ["index.js"]
+      "js": ["index.js"],
+      "all_frames": true
     }
   ]
 }
