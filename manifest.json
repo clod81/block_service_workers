@@ -8,7 +8,7 @@
   },
   "name": "Block Service Workers",
   "description": "Disallow to register Service Workers",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "icons": {
      "16": "logox16.png",
      "48": "logox48.png",
