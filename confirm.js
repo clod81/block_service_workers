@@ -50,17 +50,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message == "ask" && request.domain){
     var options = {
         type: "basic",
-        title: "Service Workers have been blocked for this website (" + request.domain + ")?",
-        iconUrl: chrome.extension.getURL("logo.png"),
-        message: "Click this notification to re-enable Service Workers"
+        iconUrl: chrome.extension.getURL("logo.png")
       }
     if(isFirefox()){ // disable, unless user allows manually
       saveDomain(request.domain, 1, false);
+      options['title'] = "Service Workers have been blocked for this website (" + request.domain + ")?";
+      options['message'] = "Click this notification to re-enable Service Workers";
     }else{
       options['buttons'] = [
         {title: "YES"},
         {title: "NO"}
       ];
+      options['title'] = "Do you want to ALLOW Service Workers for this website (" + request.domain + ")?";
       options['message'] = "Click YES to allow, or NO to block";
       options['requireInteraction'] = true;
     }

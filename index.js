@@ -1,4 +1,15 @@
 var override_service_worker;
+var override_function = "function(){";
+      override_function += "return new Promise(function(res, rej){";
+        override_function += "rej(Error('Blocked by Block Service Workers extension'));";
+      override_function += "})";
+  override_function += "}";
+var override_function_ask = "function(){";
+      override_function_ask += "window.postMessage({type:'DECIDE_SERVICE_WORKERS',text:window.location.hostname}, '*');";
+      override_function_ask += "return new Promise(function(res, rej){";
+        override_function_ask += "rej(Error('Allow or Block Service Workers for this domain'));";
+      override_function_ask += "});";
+    override_function_ask += "}";
 
 function setPageJS(content){
   var script = document.createElement('script');
@@ -47,17 +58,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
       if(storedValue === true){ // Already ALLOWED
         return;
       } else {
+        override_service_worker = 'if("serviceWorker" in navigator){navigator.serviceWorker.register=';
         if(storedValue === false){ // Already DISALLOWED
-          override_service_worker = 'if("serviceWorker" in navigator){navigator.serviceWorker.register=function(){return new Promise(function(res, rej){rej(Error("Blocked by Block Service Workers extension"))})}}';
+          override_service_worker += override_function;
         } else { // Not yet ASKED
-          override_service_worker  = 'if ("serviceWorker" in navigator){navigator.serviceWorker.register = function(){';
-              override_service_worker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",text:window.location.hostname}, "*");';
-              override_service_worker += 'return new Promise(function(res, rej){rej(Error("Allow or Block Service Workers for this domain"))})';
-          override_service_worker += '}}';
+          override_service_worker += override_function_ask;
         }
+        override_service_worker += '}';
         // INSERT SCRIPT INTO PAGE
         setPageJS(override_service_worker);
       }
     });
   }
 });
+
+
+// var iframe = document.getElementById('iframe');
+// if(iframe){
+//  var iframe_window = document.getElementById('iframe').contentWindow;
+//  if(iframe_window){
+//   iframe_window.confirm = window.confirm;
+//  }
+// }
