@@ -1,18 +1,16 @@
-function isFirefox() {
-  if (typeof chrome !== "undefined") {
-    if (typeof browser !== "undefined") {
-      return true;
-    }      
+function isFirefox(){
+  if(typeof chrome !== "undefined" && typeof browser !== "undefined"){
+    return true;
   }
   return false;
 }
 
 function saveDomain(domain, type, fireCallback){
   var data = {};
-  if(type === 0){
+  if(type === 0){ // allow
     data[domain] = true;
   }
-  if(type === 1){
+  if(type === 1){ // block
     data[domain] = false;
   }
   chrome.storage.sync.set(data, function(){
@@ -39,14 +37,6 @@ if(isFirefox()){
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-  if(request.message == "domain"){
-    chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT}, function(tabs){
-      if(tabs[0]){
-        var url = new URL(tabs[0].url);
-        chrome.tabs.sendMessage(tabs[0].id, {message: 'domain', domain: url.hostname});
-      }
-    });
-  }
   if(request.message == "ask" && request.domain){
     var options = {
         type: "basic",
