@@ -13,11 +13,11 @@ window.addEventListener("message", function(event){
   if(event.source != window){
     return;
   }
-  if (event.data.type && event.data.text){
+  if (event.data.type && event.data.domain && event.data.path){
     if(event.data.type != 'DECIDE_SERVICE_WORKERS'){
       return;
     }
-    chrome.runtime.sendMessage({message: "ask", domain: event.data.text});
+    chrome.runtime.sendMessage({message: "ask", domain: event.data.domain, path: event.data.path});
   }
 }, false);
 
@@ -51,8 +51,8 @@ chrome.storage.sync.get(domain, function(data){
     if(storedValue === false){ // Already DISALLOWED
       override_service_worker = blockSW;
     } else { // Not yet ASKED
-      override_service_worker  = 'if ("serviceWorker" in navigator){navigator.serviceWorker.register = function(){';
-          override_service_worker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",text:window.location.hostname}, "*");';
+      override_service_worker  = 'if ("serviceWorker" in navigator){navigator.serviceWorker.register = function(path){';
+          override_service_worker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:path}, "*");';
           override_service_worker += 'return new Promise(function(res, rej){rej(Error("Allow or Block Service Workers for this domain"))})';
       override_service_worker += '}}';
     }
