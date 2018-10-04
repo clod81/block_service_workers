@@ -1,4 +1,4 @@
-var override_service_worker;
+var overrideServiceWorker;
 var blockSW = 'if("serviceWorker" in navigator){navigator.serviceWorker.register=function(){return new Promise(function(res, rej){rej(Error("Blocked by Block Service Workers extension"))})}}';
 
 function setPageJS(content){
@@ -49,14 +49,14 @@ chrome.storage.sync.get(domain, function(data){
     return;
   } else {
     if(storedValue === false){ // Already DISALLOWED
-      override_service_worker = blockSW;
+      overrideServiceWorker = blockSW;
     } else { // Not yet ASKED
-      override_service_worker  = 'if ("serviceWorker" in navigator){navigator.serviceWorker.register = function(path){';
-          override_service_worker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:path}, "*");';
-          override_service_worker += 'return new Promise(function(res, rej){rej(Error("Allow or Block Service Workers for this domain"))})';
-      override_service_worker += '}}';
+      overrideServiceWorker  = 'if ("serviceWorker" in navigator){navigator.serviceWorker.register = function(path){';
+          overrideServiceWorker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:path}, "*");';
+          overrideServiceWorker += 'return new Promise(function(res, rej){rej(Error("Allow or Block this Service Worker for this domain"))})';
+      overrideServiceWorker += '}}';
     }
     // INSERT SCRIPT INTO PAGE
-    setPageJS(override_service_worker);
+    setPageJS(overrideServiceWorker);
   }
 });
