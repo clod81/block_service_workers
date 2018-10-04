@@ -1,4 +1,5 @@
 var override_service_worker;
+var keepOriginal = 'var __bsw_original__=navigator.serviceWorker.register;';
 var blockSW = 'if("serviceWorker" in navigator){navigator.serviceWorker.register=function(){return new Promise(function(res, rej){rej(Error("Blocked by Block Service Workers extension"))})}}';
 
 function setPageJS(content){
@@ -36,7 +37,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 });
 
 // Prevent registration by default. There is a small chance that registration happens before storage entry can be queried (almost never)
-setPageJS(blockSW);
+setPageJS(keepOriginal + blockSW);
 
 var domain = document.domain;
 // RETRIEVE STORED USER PREFERENCE
@@ -46,7 +47,7 @@ chrome.storage.sync.get(domain, function(data){
     storedValue = data[domain];
   }
   if(storedValue === true){ // Already ALLOWED
-    return;
+    setPageJS('navigator.serviceWorker.register=__bsw_original__;');
   } else {
     if(storedValue === false){ // Already DISALLOWED
       override_service_worker = blockSW;
