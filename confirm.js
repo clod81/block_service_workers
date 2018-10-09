@@ -45,23 +45,24 @@ if(isFirefox()){
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message == "ask" && request.domain && request.path){
+    var path = request.path.replace(/\.\//g, "/").replace(/\/\//g, "/");
     var options = {
         type: "basic",
         iconUrl: chrome.extension.getURL("logo.png")
-      }
+      };
     if(isFirefox()){ // disable, unless user allows manually
-      saveDomain(request.domain + '|' + request.path, 1, false);
-      options['title'] = "A Service Worker has been blocked for this website (" + request.domain + request.path + ")?";
+      saveDomain(request.domain + '|' + path, 1, false);
+      options['title'] = "A Service Worker has been blocked for this website (" + request.domain + path + ")?";
       options['message'] = "Click this notification to re-enable this Service Worker";
     }else{
       options['buttons'] = [
         {title: "YES"},
         {title: "NO"}
       ];
-      options['title'] = "Do you want to ALLOW this Service Worker for this website (" + request.domain + request.path + ")?";
+      options['title'] = "Do you want to ALLOW this Service Worker for this website (" + request.domain + path + ")?";
       options['message'] = "Click YES to allow, or NO to block";
       options['requireInteraction'] = true;
     }
-    chrome.notifications.create(request.domain + '|' + request.path, options);
+    chrome.notifications.create(request.domain + '|' + path, options);
   }
 });

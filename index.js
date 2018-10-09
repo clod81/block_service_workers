@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message == "remove" && request.scriptURL !== null){
     var content = 'if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(function(regs){';
         content += 'for(let reg of regs){';
-          content += 'if(reg.active.scriptURL === ' + request.scriptURL + '){';
+          content += 'if(reg.active.scriptURL === "' + request.scriptURL + '"){';
             content += 'reg.unregister();'
           content += '}';
          content +='}'; 
@@ -43,14 +43,13 @@ chrome.storage.sync.get(domain, function(data){
   if(data[domain] !== null){
     storedValue = data[domain];
   }
-  var overrideServiceWorker = 'var __bsw_override__=function(path,options){';
+  var overrideServiceWorker = 'var __bsw_override__=function(path,opts){';
         overrideServiceWorker += 'var __bsw__storedPrefs__=' + JSON.stringify(storedValue) + ';';
-        overrideServiceWorker += 'var realPath=window.location.pathname+path;';
-        // overrideServiceWorker += 'debugger;';
+        overrideServiceWorker += 'var realPath=(window.location.pathname+path).replace(/\\.\\//g, "/").replace(/\\/\\//g, "/");';
         overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__[realPath]!=="undefined"){';
           overrideServiceWorker += 'if(__bsw__storedPrefs__[realPath]){'; // already ALLOWED
             overrideServiceWorker += 'navigator.serviceWorker.register=__bsw_original__;';
-            overrideServiceWorker += 'var exec=function(){navigator.serviceWorker.register(path, options);navigator.serviceWorker.register=__bsw_override__};';
+            overrideServiceWorker += 'var exec=function(){navigator.serviceWorker.register(path, opts);navigator.serviceWorker.register=__bsw_override__};';
             overrideServiceWorker += 'return new Promise(function(res,rej){res(exec)});';            
           overrideServiceWorker += '}else{'; // already BLOCKED
             overrideServiceWorker += 'return new Promise(function(res,rej){rej(Error("A Service Worker has been blocked for this domain"))});';
