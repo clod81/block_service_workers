@@ -45,7 +45,7 @@ if(isFirefox()){
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
   if(request.message == "ask" && request.domain && request.path){
-    var path = request.path.replace(/\.\//g, "/").replace(/\/\//g, "/");
+    var path = request.path.replace(/\.\//g, "/").replace(/\/\//g, "/").replace(/\.js\?.*/, '.js');
     var options = {
         type: "basic",
         iconUrl: chrome.extension.getURL("logo.png")

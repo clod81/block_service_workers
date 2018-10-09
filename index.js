@@ -45,7 +45,7 @@ chrome.storage.sync.get(domain, function(data){
   }
   var overrideServiceWorker = 'var __bsw_override__=function(path,opts){';
         overrideServiceWorker += 'var __bsw__storedPrefs__=' + JSON.stringify(storedValue) + ';';
-        overrideServiceWorker += 'var realPath=(window.location.pathname+path).replace(/\\.\\//g, "/").replace(/\\/\\//g, "/");';
+        overrideServiceWorker += 'var realPath=(window.location.pathname+path).replace(/\\.\\//g, "/").replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js");';
         overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__[realPath]!=="undefined"){';
           overrideServiceWorker += 'if(__bsw__storedPrefs__[realPath]){'; // already ALLOWED
             overrideServiceWorker += 'navigator.serviceWorker.register=__bsw_original__;';
