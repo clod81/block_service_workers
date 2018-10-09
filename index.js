@@ -45,16 +45,18 @@ chrome.storage.sync.get(domain, function(data){
   }
   var overrideServiceWorker = 'var __bsw_override__=function(path,options){';
         overrideServiceWorker += 'var __bsw__storedPrefs__=' + JSON.stringify(storedValue) + ';';
-        overrideServiceWorker += 'if(__bsw__storedPrefs__ && __bsw__storedPrefs__[path]!==null){';
-          overrideServiceWorker += 'if(__bsw__storedPrefs__[path]){'; // already ALLOWED
+        overrideServiceWorker += 'var realPath=window.location.pathname+path;';
+        // overrideServiceWorker += 'debugger;';
+        overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__[realPath]!=="undefined"){';
+          overrideServiceWorker += 'if(__bsw__storedPrefs__[realPath]){'; // already ALLOWED
             overrideServiceWorker += 'navigator.serviceWorker.register=__bsw_original__;';
             overrideServiceWorker += 'var exec=function(){navigator.serviceWorker.register(path, options);navigator.serviceWorker.register=__bsw_override__};';
             overrideServiceWorker += 'return new Promise(function(res,rej){res(exec)});';            
           overrideServiceWorker += '}else{'; // already BLOCKED
-            overrideServiceWorker += 'return new Promise(function(res, rej){rej(Error("A Service Worker has been blocked for this domain"))});';
+            overrideServiceWorker += 'return new Promise(function(res,rej){rej(Error("A Service Worker has been blocked for this domain"))});';
           overrideServiceWorker += '}';
         overrideServiceWorker += '}else{'; // NOT YET DECIDED
-          overrideServiceWorker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:path}, "*");';
+          overrideServiceWorker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:window.location.pathname+path}, "*");';
           overrideServiceWorker += 'return new Promise(function(res, rej){rej(Error("Allow or Block this Service Worker for this domain"))})';
         overrideServiceWorker += '}';
       overrideServiceWorker += '};';
