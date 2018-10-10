@@ -67,7 +67,7 @@ chrome.storage.sync.get(null, function(data){
     Object.keys(value).sort().forEach(function(sw){
       var status = value[sw];
       var sw = escapeHtml(sw);
-      var $li = $("<li id='" + sw + "' class='" + status + " indent' data-type='sw'><button class='remove'>X</button>" + sw + "</li>");
+      var $li = $("<li id='" + sw + "' class='indent' data-type='sw'><button class='remove'>X</button><a class='" + status + "' href='https://" + domain + sw + "' target='_blank'>" + sw + "</a></li>");
       $sws.append($li);
     });
     $domains.append($sws);

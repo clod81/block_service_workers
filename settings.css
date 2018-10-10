@@ -35,14 +35,6 @@ ul li {
   margin: 0.69em;
 }
 
-ul li.true{
-  color: #6FE06F
-}
-
-ul li.false{
-  color: #F74E4E;
-}
-
 li.indent{
   margin-left: 1.29em;
 }
@@ -91,6 +83,14 @@ a:active,
 a:hover {
   outline: 0;
   color: #ffffff;
+}
+
+li a.true{
+  color: #6FE06F
+}
+
+li a.false{
+  color: #F74E4E;
 }
 
 b,
