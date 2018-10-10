@@ -5,24 +5,31 @@ function isFirefox(){
   return false;
 }
 
-function saveDomain(domain, type, fireCallback){
-  var data = {};
-  if(type === 0){ // allow
-    data[domain] = true;
-  }
-  if(type === 1){ // block
-    data[domain] = false;
-  }
-  chrome.storage.sync.set(data, function(){
-    if(fireCallback){
-      chrome.tabs.query({url: 'https://' + domain + '/*'}, function(tabs){
-        if(data[domain]){
-          chrome.tabs.reload(tabs[0].id);
-        }else{
-          chrome.tabs.sendMessage(tabs[0].id, {message: 'remove'});
-        }
-      });
+function splitDomainPathFromNotificationId(notificationId){
+  var split = notificationId.split('|');
+  return {domain: split[0], path: split[1]};
+}
+
+function saveDomain(notificationId, type, fireCallback){
+  var split = splitDomainPathFromNotificationId(notificationId);
+  var domain = split.domain;
+  var path = split.path;
+  chrome.storage.sync.get(domain, function(data){
+    if(data[domain] === null || typeof data[domain] !== 'object'){
+      data[domain] = {};
     }
+    data[domain][path] = (type === 0);
+    chrome.storage.sync.set(data, function(){
+      if(fireCallback){
+        chrome.tabs.query({url: 'https://' + domain + '/*'}, function(tabs){
+          if(data[domain][path]){
+            chrome.tabs.reload(tabs[0].id);
+          }else{
+            chrome.tabs.sendMessage(tabs[0].id, {message: 'remove', scriptURL: 'https://' + domain + path});
+          }
+        });
+      }
+    });
   });
 }
 
@@ -37,24 +44,25 @@ if(isFirefox()){
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-  if(request.message == "ask" && request.domain){
+  if(request.message == "ask" && request.domain && request.path){
+    var path = request.path.replace(/\.\//g, "/").replace(/\/\//g, "/").replace(/\.js\?.*/, '.js');
     var options = {
         type: "basic",
         iconUrl: chrome.extension.getURL("logo.png")
-      }
+      };
     if(isFirefox()){ // disable, unless user allows manually
-      saveDomain(request.domain, 1, false);
-      options['title'] = "Service Workers have been blocked for this website (" + request.domain + ")?";
-      options['message'] = "Click this notification to re-enable Service Workers";
+      saveDomain(request.domain + '|' + path, 1, false);
+      options['title'] = "A Service Worker has been blocked for this website (" + request.domain + path + ")?";
+      options['message'] = "Click this notification to re-enable this Service Worker";
     }else{
       options['buttons'] = [
         {title: "YES"},
         {title: "NO"}
       ];
-      options['title'] = "Do you want to ALLOW Service Workers for this website (" + request.domain + ")?";
+      options['title'] = "Do you want to ALLOW this Service Worker for this website (" + request.domain + path + ")?";
       options['message'] = "Click YES to allow, or NO to block";
       options['requireInteraction'] = true;
     }
-    chrome.notifications.create(request.domain, options);
+    chrome.notifications.create(request.domain + '|' + path, options);
   }
 });
