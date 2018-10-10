@@ -44,8 +44,11 @@ if(isFirefox()){
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-  if(request.message == "ask" && request.domain && request.path){
-    var path = request.path.replace(/\.\//g, "/").replace(/\/\//g, "/").replace(/\.js\?.*/, '.js');
+  if(request.message == "ask" && request.domain && request.path && request.pathname){
+    var path = request.path.replace(/\/\//g, "/").replace(/\.js\?.*/, '.js');
+    if(path.charAt(0) !== '/'){
+      path = request.pathname.replace(/\/\//g, "/").replace(/\.js\?.*/, '.js') + path;
+    }
     var options = {
         type: "basic",
         iconUrl: chrome.extension.getURL("logo.png")

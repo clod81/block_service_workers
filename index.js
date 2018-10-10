@@ -10,11 +10,11 @@ window.addEventListener("message", function(event){
   if(event.source != window){
     return;
   }
-  if (event.data.type && event.data.domain && event.data.path){
+  if (event.data.type && event.data.domain && event.data.path && event.data.pathname){
     if(event.data.type != 'DECIDE_SERVICE_WORKERS'){
       return;
     }
-    chrome.runtime.sendMessage({message: "ask", domain: event.data.domain, path: event.data.path});
+    chrome.runtime.sendMessage({message: "ask", domain: event.data.domain, path: event.data.path, pathname: event.data.pathname});
   }
 }, false);
 
@@ -45,7 +45,10 @@ chrome.storage.sync.get(domain, function(data){
   }
   var overrideServiceWorker = 'var __bsw_override__=function(path,opts){';
         overrideServiceWorker += 'var __bsw__storedPrefs__=' + JSON.stringify(storedValue) + ';';
-        overrideServiceWorker += 'var realPath=(window.location.pathname+path).replace(/\\.\\//g, "/").replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js");';
+        overrideServiceWorker += 'var realPath=path.replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js");';
+        overrideServiceWorker += 'if(realPath.charAt(0)!=="/"){';
+          overrideServiceWorker += 'realPath = window.location.pathname.replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js") + realPath;';
+        overrideServiceWorker += '}';
         overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__[realPath]!=="undefined"){';
           overrideServiceWorker += 'if(__bsw__storedPrefs__[realPath]){'; // already ALLOWED
             overrideServiceWorker += 'var exec=function(){__bsw_override__(path, opts)};';
@@ -54,7 +57,7 @@ chrome.storage.sync.get(domain, function(data){
             overrideServiceWorker += 'return new Promise(function(res,rej){rej(Error("A Service Worker has been blocked for this domain"))});';
           overrideServiceWorker += '}';
         overrideServiceWorker += '}else{'; // NOT YET DECIDED
-          overrideServiceWorker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:window.location.pathname+path}, "*");';
+          overrideServiceWorker += 'window.postMessage({type:"DECIDE_SERVICE_WORKERS",domain:window.location.hostname,path:path,pathname:window.location.pathname}, "*");';
           overrideServiceWorker += 'return new Promise(function(res, rej){rej(Error("Allow or Block this Service Worker for this domain"))})';
         overrideServiceWorker += '}';
       overrideServiceWorker += '};';
