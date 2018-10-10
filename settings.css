@@ -43,6 +43,10 @@ ul li.false{
   color: #F74E4E;
 }
 
+li.indent{
+  margin-left: 1.29em;
+}
+
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -80,11 +84,13 @@ video {
 
 a {
   background: transparent;
+  color: #ffffff;
 }
 
 a:active,
 a:hover {
   outline: 0;
+  color: #ffffff;
 }
 
 b,
@@ -170,7 +176,7 @@ header nav {
 }
 
 #main {
-  width: 300px;
+  width: 450px;
   max-height: 200px;
 }
 

@@ -27,19 +27,51 @@ $buttonClear.on('click', function(){
 });
 
 $(document).on('click', 'button.remove', function(){
-  chrome.storage.sync.remove($(this).parent().attr('id'));
-  $(this).parent().remove();
+  var $parent = $(this).parent();
+  if($parent.data('type') === "domain"){
+    var domain = $parent.attr('id');
+    chrome.storage.sync.remove(domain);
+    $('span[data-domain="' + domain + '"]').remove();
+  }else{
+    var domain = $parent.parent().data('domain');
+    chrome.storage.sync.get(domain, function(data){
+      if(data[domain] === null || typeof data[domain] !== 'object'){
+        return;
+      }
+      delete data[domain][$parent.attr('id')];
+      if($.isEmptyObject(data[domain])){
+        $('li[data-domain="' + domain + '"] button').click();
+      }else{
+        chrome.storage.sync.set(data);
+      }
+    });
+  }
+  $parent.remove();
+});
+
+$(document).on('click', 'li[data-type="domain"]', function(){
+  var domain = $(this).attr('id');
+  $('span[data-domain="' + domain + '"]').toggle();
 });
 
 chrome.storage.sync.get(null, function(data){
   if($.isEmptyObject(data)){
     return $buttonClear.hide();
   }
-  Object.keys(data).sort().forEach(function(domain) {
+  Object.keys(data).sort().forEach(function(domain){
     var value = data[domain];
     var domain = escapeHtml(domain);
-    var $li = $("<li id='" + domain + "' class='" + value + "'><button class='remove'>X</button>" + domain + "<hr/></li>");
+    var $li = $("<li id='" + domain + "' data-domain='" + domain + "' data-type='domain'><button class='remove'>X</button><a href='#'>" + domain + "</a></li>");
     $domains.append($li);
+    var $sws = $("<span data-domain='" + domain + "' style='display:none'></span>");
+    Object.keys(value).sort().forEach(function(sw){
+      var status = value[sw];
+      var sw = escapeHtml(sw);
+      var $li = $("<li id='" + sw + "' class='" + status + " indent' data-type='sw'><button class='remove'>X</button>" + sw + "</li>");
+      $sws.append($li);
+    });
+    $domains.append($sws);
+    $domains.append("<hr/>");
   });
   $domains.show();
 });
