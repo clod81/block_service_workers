@@ -48,8 +48,7 @@ chrome.storage.sync.get(domain, function(data){
         overrideServiceWorker += 'var realPath=(window.location.pathname+path).replace(/\\.\\//g, "/").replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js");';
         overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__[realPath]!=="undefined"){';
           overrideServiceWorker += 'if(__bsw__storedPrefs__[realPath]){'; // already ALLOWED
-            overrideServiceWorker += 'navigator.serviceWorker.register=__bsw_original__;';
-            overrideServiceWorker += 'var exec=function(){navigator.serviceWorker.register(path, opts);navigator.serviceWorker.register=__bsw_override__};';
+            overrideServiceWorker += 'var exec=function(){__bsw_override__(path, opts)};';
             overrideServiceWorker += 'return new Promise(function(res,rej){res(exec)});';            
           overrideServiceWorker += '}else{'; // already BLOCKED
             overrideServiceWorker += 'return new Promise(function(res,rej){rej(Error("A Service Worker has been blocked for this domain"))});';
