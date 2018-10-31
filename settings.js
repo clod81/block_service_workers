@@ -20,6 +20,20 @@ function escapeHtml(string){
   });
 }
 
+function calculateDomainStatus(domainStatus, status){
+  var localStatus = status ? 1 : 0;
+  if(domainStatus === null){
+    return localStatus;
+  }
+  if(domainStatus === 2){
+    return 2;
+  }
+  if(domainStatus !== localStatus){
+    return 2;
+  }
+  return domainStatus;
+}
+
 $buttonClear.on('click', function(){
   chrome.storage.sync.clear();
   $domains.hide();
@@ -64,12 +78,17 @@ chrome.storage.sync.get(null, function(data){
     var $li = $("<li id='" + domain + "' data-domain='" + domain + "' data-type='domain'><button class='remove'>X</button><a href='#'>" + domain + "</a></li>");
     $domains.append($li);
     var $sws = $("<span data-domain='" + domain + "' style='display:none'></span>");
+    var domainStatus = null;
     Object.keys(value).sort().forEach(function(sw){
       var status = value[sw];
+      domainStatus = calculateDomainStatus(domainStatus, status);
       var sw = escapeHtml(sw);
-      var $li = $("<li id='" + sw + "' class='indent' data-type='sw'><button class='remove'>X</button><a class='" + status + "' href='https://" + domain + sw + "' target='_blank'>" + sw + "</a></li>");
-      $sws.append($li);
+      var $singleSWli = $("<li id='" + sw + "' class='indent' data-type='sw'><button class='remove'>X</button><a class='" + status + "' href='https://" + domain + sw + "' target='_blank'>" + sw + "</a></li>");
+      $sws.append($singleSWli);
     });
+    if(domainStatus < 2){
+      $li.find('a').attr('class', (domainStatus === 0) ? false : true);
+    }
     $domains.append($sws);
     $domains.append("<hr/>");
   });
