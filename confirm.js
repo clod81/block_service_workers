@@ -36,10 +36,12 @@ function saveDomain(notificationId, type, fireCallback){
 if(isFirefox()){
   chrome.notifications.onClicked.addListener(function(notificationId){
     saveDomain(notificationId, 0, true);
+    chrome.notifications.clear(notificationId);
   });
 }else{
   chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
     saveDomain(notificationId, buttonIndex, true);
+    chrome.notifications.clear(notificationId);
   });
 }
 
