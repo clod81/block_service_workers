@@ -58,6 +58,10 @@ If you want to manually install it on Firefox from this code, change the `manife
 ## Authors ##
 
   * [Claudio Contin](http://github.com/clod81)
+  
+## License
+
+This tool is released under the [MIT License](https://opensource.org/licenses/MIT).
 
 ## How to contribute
 
