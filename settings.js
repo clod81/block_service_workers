@@ -68,11 +68,21 @@ $(document).on('click', 'li[data-type="domain"]', function(){
   $('span[data-domain="' + domain + '"]').toggle();
 });
 
+// Save the default behavior dropdown value when it changes
+$('#default_behavior').on('change', function(){
+  chrome.storage.sync.set({'__default_behavior__': $(this).val()});
+});
+
 chrome.storage.sync.get(null, function(data){
   if($.isEmptyObject(data)){
     return $buttonClear.hide();
   }
   Object.keys(data).sort().forEach(function(domain){
+    if (domain === '__default_behavior__') {
+      // Set the value of the default behavior dropdown
+      $('#default_behavior').val(data[domain]);
+      return;
+    }
     var value = data[domain];
     var domain = escapeHtml(domain);
     var $li = $("<li id='" + domain + "' data-domain='" + domain + "' data-type='domain'><button class='remove'>X</button><a href='#'>" + domain + "</a></li>");
