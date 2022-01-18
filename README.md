@@ -1,6 +1,8 @@
 Extension to block Service Workers registration in Chrome
 =========
 
+This project has been developed following the research and the development of the tool: https://shadow-workers.github.io
+
 [Chrome Web Store](https://chrome.google.com/webstore/detail/block-service-workers/ceokjgeibfjfcboemhdpkdalankbmnej)
 
 
