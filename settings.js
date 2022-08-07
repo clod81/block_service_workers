@@ -63,10 +63,10 @@ $(document).on('click', 'button.remove', function(){
   $parent.remove();
 });
 
-$(document).on('click', 'li[data-type="domain"]', function(){
+/*$(document).on('click', 'li[data-type="domain"]', function(){
   var domain = $(this).attr('id');
   $('span[data-domain="' + domain + '"]').toggle();
-});
+});*/
 
 chrome.storage.sync.get(null, function(data){
   if($.isEmptyObject(data)){

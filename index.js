@@ -45,12 +45,8 @@ chrome.storage.sync.get(domain, function(data){
   }
   var overrideServiceWorker = 'var __bsw_override__=function(path,opts){';
         overrideServiceWorker += 'var __bsw__storedPrefs__=' + JSON.stringify(storedValue) + ';';
-        overrideServiceWorker += 'var realPath=path.replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js");';
-        overrideServiceWorker += 'if(realPath.charAt(0)!=="/"){';
-          overrideServiceWorker += 'realPath = window.location.pathname.replace(/\\/\\//g, "/").replace(/\\.js\\?.*/, ".js") + realPath;';
-        overrideServiceWorker += '}';
-        overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__[realPath]!=="undefined"){';
-          overrideServiceWorker += 'if(__bsw__storedPrefs__[realPath]){'; // already ALLOWED
+        overrideServiceWorker += 'if(__bsw__storedPrefs__ && typeof __bsw__storedPrefs__!=="undefined" && Object.keys(__bsw__storedPrefs__).length > 0){';
+            overrideServiceWorker += 'if(__bsw__storedPrefs__[Object.keys(__bsw__storedPrefs__)[0]]){' // already ALLOWED
             overrideServiceWorker += 'var exec=function(){__bsw_override__(path, opts)};';
             overrideServiceWorker += 'return new Promise(function(res,rej){res(exec)});';            
           overrideServiceWorker += '}else{'; // already BLOCKED
