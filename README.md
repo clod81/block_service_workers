@@ -1,3 +1,5 @@
+This repo has been archived. Extensions require to be migrated to version 3. I have no time to keep it updated, so I decided to discontinue the support and development on this.
+
 Extension to block Service Workers registration in Chrome
 =========
 
